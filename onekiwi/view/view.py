@@ -5,7 +5,7 @@ from ..version import version
 class PadDistanceDialogView(PadDistanceDialog):
     def __init__(self):
         PadDistanceDialog.__init__(self, None)
-        self.SetTitle('Pad to Pad minimum distance %s' % version)
+        self.SetTitle('Pad to Pad minimum distance v%s' % version)
         self.window = wx.GetTopLevelParent(self)
 
     def HighResWxSize(self, window, size):

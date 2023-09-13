@@ -2,7 +2,9 @@
 ![screenshot](icon/icon_256x256.png)
 
 ## GUI
-![screenshot](doc/component-placement.png)
+| Normal               | Discrete Device               |
+| ---------------------- | ---------------------- |
+| ![Normal](doc/pad-distance-1.png) | ![Discrete Device](doc/pad-distance-2.png) |
 
 ## Installation 💾
 

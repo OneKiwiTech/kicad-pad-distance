@@ -15,6 +15,16 @@ class NetInfo:
         self.code = code
         self.pads:List[PadInfo] = []
 
+class NetDisplay:
+    def __init__(self, code, name, via_count, via_length, track_length, total_length, tracks):
+        self.code = code
+        self.name = name
+        self.via_count = via_count
+        self.via_length = via_length
+        self.track_length = track_length
+        self.total_length = total_length
+        self.tracks:List[pcbnew.PCB_TRACK] = tracks
+
 class Model:
     def __init__(self, board, logger):
         self.logger = logger
@@ -25,6 +35,7 @@ class Model:
         self.nets:List[NetInfo] = []
         self.thickness = get_thickness_stackup(self.board)
         self.tracklength:TrackLength
+        self.tracks = []
 
     def get_all_net(self):
         #self.netsinfo = [v for k,v in self.board.GetNetsByName().items()]
@@ -50,5 +61,21 @@ class Model:
     def track_length(self, ref1, pad1, ref2, pad2):
         self.tracklength = TrackLength(self.board, ref1, pad1, ref2, pad2, self.thickness)
         length = self.tracklength.find_min_track()
-        self.logger.info('track length: %s', length.track_length)
-        self.logger.info('via length: %s', length.via_length)
+        pin = self.board.FindFootprintByReference(ref1).FindPadByNumber(pad1)
+        name = pin.GetNetname()
+        code = self.board.GetNetcodeFromNetname(name)
+        self.tracks.extend(length.tracks)
+        netdisplay = NetDisplay(code, name, length.via_count, length.via_length, length.track_length, length.total_length, length.tracks)
+        return netdisplay
+        #self.logger.info('track length: %s', length.track_length)
+        #self.logger.info('via length: %s', length.via_length)
+
+    def set_highlight_net(self):
+        for track in self.tracks:
+            track.SetBrightened()
+        pcbnew.Refresh()
+
+    def clear_highlight_net(self):
+        for track in self.tracks:
+            track.ClearBrightened()
+        pcbnew.Refresh()
