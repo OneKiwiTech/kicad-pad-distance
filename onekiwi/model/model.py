@@ -1,6 +1,4 @@
 import pcbnew
-import os
-import csv
 from typing import List
 from ..kicad.board import get_thickness_stackup
 from ..kicad.tracklength import TrackLength

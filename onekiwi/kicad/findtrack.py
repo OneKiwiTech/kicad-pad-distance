@@ -1,9 +1,5 @@
-from cmath import log
-import logging
 import pcbnew
 from typing import List
-
-#from .stackup import *
 
 ANY_LAYER = 'Any'
 
@@ -241,7 +237,6 @@ class FindNet:
         self.find.current_layer = temp_find.temp_layer
         index_data = self.data.index
         self.data.items[index_data].temps[index] = temp_find
-        #test = self.data.items[index_data].temps[index]
 
     def find_hole_pad(self):
         self.find.temps.clear()
