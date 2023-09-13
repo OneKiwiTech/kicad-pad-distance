@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 version=$(git describe --tags --dirty)
-name=$(echo component-placement-$version.zip)
+name=$(echo pad-distance-$version.zip)
 
 echo "Building release $version"
 cp metadata.json.template metadata.json
