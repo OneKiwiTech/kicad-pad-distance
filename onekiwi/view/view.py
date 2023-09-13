@@ -1,7 +1,7 @@
 import wx
 from .dialog import *
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 
 class PadDistanceDialogView(PadDistanceDialog):
     def __init__(self):
