@@ -3,6 +3,7 @@ from ..view.view import PadDistanceDialogView
 from .logtext import LogText
 import wx
 import sys
+import math
 import logging
 import logging.config
 from ..view.viewdiscrete import DiscretePanelView
@@ -152,12 +153,19 @@ class Controller:
         dis1 = self.model.track_length(pref1, ppad1, pref2, ppad2)
         dis2 = self.model.track_length(sref1, spad1, sref2, spad2)
 
+        pin1 = self.board.FindFootprintByReference(pref2).FindPadByNumber(ppad2).GetPosition()
+        pin2 = self.board.FindFootprintByReference(sref1).FindPadByNumber(spad1).GetPosition()
+        dx = abs(pin1.x - pin2.x)/1000000
+        dy = abs(pin1.y - pin2.y)/1000000
+        manhattan = math.sqrt(dx*dx + dy*dy)
+
         scale = 1.0
         if self.cur_unit == 'in':
             scale = 10/254
         elif self.cur_unit == 'mil':
             scale = 10000/254
 
+        delta = round(manhattan*scale, 4)
         via1_length = round(dis1.via_length*scale, 4)
         track1_length = round(dis1.track_length*scale, 4)
         total1_length = round(dis1.total_length*scale, 4)
@@ -168,6 +176,7 @@ class Controller:
         via_length = round((dis1.via_length + dis2.via_length)*scale, 4)
         track_length = round((dis1.track_length + dis2.track_length)*scale, 4)
         total_length = round((dis1.total_length + dis2.track_length)*scale, 4)
+        total = round((dis1.total_length + dis2.track_length + manhattan)*scale, 4)
         self.view.dataViewLength.DeleteAllItems()
         self.view.dataViewLength.AppendItem([str(dis1.code), dis1.name, 
                                              str(dis1.via_count), str(via1_length), 
@@ -178,6 +187,10 @@ class Controller:
         self.view.dataViewLength.AppendItem(['', 'Total Length', 
                                              str(via_count), str(via_length), 
                                              str(track_length), str(total_length)])
+        self.view.dataViewLength.AppendItem(['', 'Manhattan Discrete', 
+                                             '', '', '', str(delta)])
+        self.view.dataViewLength.AppendItem(['', 'Total with Manhattan', 
+                                             '', '', '', str(total)])
         
     def OnSetHighLightPressed(self, event):
         self.logger.info('OnSetHighLightPressed')
